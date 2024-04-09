@@ -27,8 +27,7 @@ function listAllBalances() {
 }
 
 function listOneBalance(accountNumber) {
-  console.log(accountNumber);
-  return knex("balances").select("*").where({ accountNumber });
+  return knex("balances").select("balance").where({ accountNumber });
 }
 
 module.exports = {
