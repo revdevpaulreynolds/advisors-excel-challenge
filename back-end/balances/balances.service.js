@@ -26,12 +26,36 @@ function listAllBalances() {
   return knex("balances").select("*");
 }
 
-function listOneBalance(accountNumber) {
-  return knex("balances").select("balance").where({ accountNumber });
+async function listOneBalance(accountNumber) {
+  const balance = await knex("balances")
+    .select("balance")
+    .where({ accountNumber })
+    .first();
+  return balance.balance;
+}
+
+async function resetBalances() {
+  const accountsTableContents = await knex("accounts")
+    .select("*")
+    .orderBy("account_number");
+
+  accountsTableContents.forEach(async (account) => {
+    await knex("balances")
+      .where({ accountNumber: account.account_number })
+      .update(
+        {
+          balance: account.amount,
+        },
+        ["accountNumber", "balance"]
+      );
+  });
+  const newBalances = await knex("balances").orderBy("accountNumber");
+  return newBalances;
 }
 
 module.exports = {
   populateAllBalances,
   listAllBalances,
   listOneBalance,
+  resetBalances,
 };
