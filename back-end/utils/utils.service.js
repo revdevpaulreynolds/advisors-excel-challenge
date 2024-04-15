@@ -13,15 +13,11 @@ async function addTransactionActivityLog(
   transactionType,
   transactionAmount
 ) {
-  const logged = await knex("activity_log").insert(
-    {
-      account_number: accountNumber,
-      transaction_type: transactionType,
-      transaction_amount: transactionAmount,
-    },
-    ["account_number", "transaction_type", "transaction_amount"]
-  );
-  return logged;
+  await knex("activity_log").insert({
+    account_number: accountNumber,
+    transaction_type: transactionType,
+    transaction_amount: transactionAmount,
+  });
 }
 
 module.exports = {
