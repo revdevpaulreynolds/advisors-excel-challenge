@@ -8,10 +8,10 @@ async function populateAllBalances() {
       knex("balances")
         .insert(
           {
-            accountNumber: account.account_number,
+            account_number: account.account_number,
             balance: account.amount,
           },
-          ["accountNumber", "balance"]
+          ["account_number", "balance"]
         )
         .then((ret) => {
           console.log(ret);
@@ -23,13 +23,14 @@ async function populateAllBalances() {
 }
 
 function listAllBalances() {
-  return knex("balances").select("*");
+  return knex("accounts");
+  // return knex("balances").select("*");
 }
 
 async function listOneBalance(accountNumber) {
   const balance = await knex("balances")
     .select("balance")
-    .where({ accountNumber })
+    .where({ account_number: accountNumber })
     .first();
   return balance.balance;
 }
@@ -41,15 +42,15 @@ async function resetBalances() {
 
   accountsTableContents.forEach(async (account) => {
     await knex("balances")
-      .where({ accountNumber: account.account_number })
+      .where({ account_number: account.account_number })
       .update(
         {
           balance: account.amount,
         },
-        ["accountNumber", "balance"]
+        ["account_number", "balance"]
       );
   });
-  const newBalances = await knex("balances").orderBy("accountNumber");
+  const newBalances = await knex("balances").orderBy("account_number");
   return newBalances;
 }
 

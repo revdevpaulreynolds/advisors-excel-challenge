@@ -1,16 +1,19 @@
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 const service = require("./deposits.service");
 const balanceService = require("../balances/balances.service");
+const utilsService = require("../utils/utils.service");
 
 async function setParams(req, res, next) {
   const { accountNumber, depositAmount } = req.params;
+  const isCreditAccount = await utilsService.checkCredit(accountNumber);
+  res.locals.isCreditAccount = isCreditAccount;
   res.locals.depositAmount = parseInt(depositAmount);
   res.locals.accountNumber = accountNumber;
   next();
 }
 
 async function checkCredit(req, res, next) {
-  const { accountNumber, depositAmount } = res.locals;
+  const { accountNumber, depositAmount, isCreditAccount } = res.locals;
 
   if (depositAmount > 1000) {
     return res.json({
@@ -19,7 +22,6 @@ async function checkCredit(req, res, next) {
     });
   }
 
-  const isCreditAccount = await service.checkCredit(accountNumber);
   const currentBalance = await balanceService.listOneBalance(accountNumber);
   if (isCreditAccount && currentBalance <= 0) {
     if (currentBalance + depositAmount > 0) {

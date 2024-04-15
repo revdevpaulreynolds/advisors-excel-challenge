@@ -1,23 +1,14 @@
 const knex = require("../db/connection.ts");
 const { listOneBalance } = require("../balances/balances.service");
 
-async function checkCredit(accountNumber) {
-  const myBalance = await listOneBalance(accountNumber);
-  const accountType = await knex("accounts")
+async function makeDeposit(accountNumber, newBalance) {
+  const query = await knex("balances")
     .where({ account_number: accountNumber })
-    .select("type")
-    .first();
+    .update({ balance: newBalance }, ["account_number", "balance"]);
 
-  return accountType.type === "credit";
-}
-
-function makeDeposit(accountNumber, newBalance) {
-  return knex("balances")
-    .where({ accountNumber })
-    .update({ balance: newBalance }, ["accountNumber", "balance"]);
+  return query;
 }
 
 module.exports = {
-  checkCredit,
   makeDeposit,
 };
