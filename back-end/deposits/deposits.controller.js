@@ -38,6 +38,11 @@ async function checkCredit(req, res, next) {
 async function updateBalance(req, res, next) {
   const { accountNumber, currentBalance, depositAmount } = res.locals;
 
+  await utilsService.addTransactionActivityLog(
+    accountNumber,
+    "deposit",
+    depositAmount
+  );
   const newBalance = currentBalance + depositAmount;
 
   return res.json({
