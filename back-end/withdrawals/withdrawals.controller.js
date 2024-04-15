@@ -70,23 +70,45 @@ async function checkDailyWithdrawalAmount(req, res, next) {
       currentMonth,
       currentDate
     );
+  if (todaysWithdrawalTotal + withdrawalAmount > 400) {
+    return res.json({
+      status: 400,
+      message: "You cannot withdraw more than $400 in one day.",
+    });
+  }
   console.log(todaysWithdrawalTotal);
   res.locals.currentMonth = currentMonth;
   res.locals.currentDate = currentDate;
+  res.locals.todaysWithdrawalTotal = todaysWithdrawalTotal || 0;
   next();
 }
 
 async function withdraw(req, res, next) {
-  const { accountNumber, withdrawalAmount, currentMonth, currentDate } =
-    res.locals;
+  const {
+    accountNumber,
+    withdrawalAmount,
+    currentMonth,
+    currentDate,
+    todaysWithdrawalTotal,
+  } = res.locals;
   const updateWithdrawalDate = await service.updateWithdrawalDate(
     accountNumber,
     currentMonth,
     currentDate
   );
+
+  const newDailyWithdrawalTotal = withdrawalAmount + todaysWithdrawalTotal;
   const { daily_total_withdrawn: updateWithdrawalAmount } =
-    await service.updateWithdrawalAmount(accountNumber, withdrawalAmount);
-  console.log(`updateWithdrawalDate: ${updateWithdrawalDate}`);
+    await service.updateWithdrawalAmount(
+      accountNumber,
+      newDailyWithdrawalTotal
+    );
+
+  await utilsService.addTransactionActivityLog(
+    accountNumber,
+    "withdrawal",
+    withdrawalAmount
+  );
   console.table(`updatedWithdrawalAmount: ${updateWithdrawalAmount}`);
   return res.json({
     status: 200,

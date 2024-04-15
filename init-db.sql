@@ -53,3 +53,11 @@ CREATE TABLE daily_withdrawal_totals (
 --populating daily withdrawals table
 INSERT INTO daily_withdrawal_totals (account_number)
 (SELECT account_number FROM accounts);
+
+DROP TABLE IF EXISTS activity_log;
+CREATE TABLE activity_log (
+    account_number INTEGER,
+    transaction_type VARCHAR,
+    transaction_amount INTEGER,
+    CHECK (transaction_amount <= 1000)
+);

@@ -24,19 +24,18 @@ async function getDailyWithdrawalTotal(
   currentMonth,
   currentDate
 ) {
-  const todaysWithdrawalTotal = await knex("daily_withdrawal_totals")
+  const todaysWithdrawalTotal = (await knex("daily_withdrawal_totals")
     .column("daily_total_withdrawn")
     .where({
       account_number: accountNumber,
       month_updated: currentMonth,
       date_updated: currentDate,
     })
-    .first();
+    .first()) || { daily_total_withdrawn: null };
   return todaysWithdrawalTotal;
 }
 
 async function updateWithdrawalDate(accountNumber, currentMonth, currentDate) {
-  console.log(accountNumber, currentMonth, currentDate);
   const updatedDate = await knex("daily_withdrawal_totals")
     .where({ account_number: accountNumber })
     .update(
@@ -46,7 +45,6 @@ async function updateWithdrawalDate(accountNumber, currentMonth, currentDate) {
       },
       ["account_number", "month_updated", "date_updated"]
     );
-  console.log(`updatedDate: ${JSON.stringify(updatedDate)}`);
   return updatedDate;
 }
 
