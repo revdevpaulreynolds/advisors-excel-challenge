@@ -7,25 +7,20 @@ async function listAllBalances(req, res, next) {
   });
 }
 
-async function validateAccountNumber(req, res, next) {
+async function listOneBalance(req, res, next) {
   const { accountNumber } = req.params;
-  const exists = await service.listOneBalance(accountNumber);
-  if (!exists.length)
+  const balance = await service.listOneBalance(accountNumber);
+  if (!balance.length)
     return res.json({
       status: 404,
       message: `${accountNumber} is not an existing account number`,
     });
-  next();
-}
-
-async function listOneBalance(req, res, next) {
-  const { accountNumber } = req.params;
   return res.json({
-    data: await service.listOneBalance(accountNumber),
+    data: balance,
   });
 }
 
 module.exports = {
   listAllBalances: [asyncErrorBoundary(listAllBalances)],
-  listOneBalance: [validateAccountNumber, asyncErrorBoundary(listOneBalance)],
+  listOneBalance: [asyncErrorBoundary(listOneBalance)],
 };
