@@ -5,7 +5,7 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 
 const balancesRouter = require("./balances/balances.router");
-const depositsRouter = require("./deposits/deposits.router");
+const depositsRouter = require("./routes/deposits/deposits.router");
 const withdrawalsRouter = require("./withdrawals/withdrawals.router");
 
 var app = express();

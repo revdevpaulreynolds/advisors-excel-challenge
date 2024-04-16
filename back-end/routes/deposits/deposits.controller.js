@@ -1,7 +1,7 @@
-const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
+const asyncErrorBoundary = require("../../errors/asyncErrorBoundary");
 const service = require("./deposits.service");
-const balanceService = require("../balances/balances.service");
-const utilsService = require("../utils/utils.service");
+const balanceService = require("../../balances/balances.service");
+const utilsService = require("../../utils/utils.service");
 
 async function setParams(req, res, next) {
   const { accountNumber, depositAmount } = req.params;
@@ -51,8 +51,8 @@ async function updateBalance(req, res, next) {
 }
 
 module.exports = {
-  updateBalance: [
-    setParams,
+  makeDeposit: [
+    asyncErrorBoundary(setParams),
     asyncErrorBoundary(checkCredit),
     asyncErrorBoundary(updateBalance),
   ],

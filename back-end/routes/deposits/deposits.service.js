@@ -1,5 +1,4 @@
-const knex = require("../db/connection.ts");
-const { listOneBalance } = require("../balances/balances.service");
+const knex = require("../../db/connection.ts");
 
 async function makeDeposit(accountNumber, newBalance) {
   const query = await knex("balances")
