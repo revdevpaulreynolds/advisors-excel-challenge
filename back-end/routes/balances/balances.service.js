@@ -9,6 +9,7 @@ async function listOneBalance(accountNumber) {
     .select("balance")
     .where({ account_number: accountNumber })
     .first();
+
   return balance.balance;
 }
 
