@@ -25,13 +25,7 @@ async function listOneBalance(req, res, next) {
   });
 }
 
-async function resetBalances(req, res, next) {
-  const accounts = await service.resetBalances();
-  return res.json({ data: accounts });
-}
-
 module.exports = {
   listAllBalances: [asyncErrorBoundary(listAllBalances)],
   listOneBalance: [validateAccountNumber, asyncErrorBoundary(listOneBalance)],
-  resetBalances: [asyncErrorBoundary(resetBalances)],
 };
