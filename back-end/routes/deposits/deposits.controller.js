@@ -1,6 +1,6 @@
 const asyncErrorBoundary = require("../../errors/asyncErrorBoundary");
 const service = require("./deposits.service");
-const balanceService = require("../../balances/balances.service");
+const balanceService = require("../balances/balances.service");
 const utilsService = require("../../utils/utils.service");
 
 async function setParams(req, res, next) {

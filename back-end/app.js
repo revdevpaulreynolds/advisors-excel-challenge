@@ -4,9 +4,9 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 
-const balancesRouter = require("./balances/balances.router");
+const balancesRouter = require("./routes/balances/balances.router");
 const depositsRouter = require("./routes/deposits/deposits.router");
-const withdrawalsRouter = require("./withdrawals/withdrawals.router");
+const withdrawalsRouter = require("./routes/withdrawals/withdrawals.router");
 
 var app = express();
 

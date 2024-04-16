@@ -1,4 +1,4 @@
-const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
+const asyncErrorBoundary = require("../../errors/asyncErrorBoundary");
 const service = require("./balances.service");
 
 async function listAllBalances(req, res, next) {
