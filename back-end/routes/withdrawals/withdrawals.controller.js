@@ -76,7 +76,6 @@ async function checkDailyWithdrawalAmount(req, res, next) {
       message: "You cannot withdraw more than $400 in one day.",
     });
   }
-  console.log(todaysWithdrawalTotal);
   res.locals.currentMonth = currentMonth;
   res.locals.currentDate = currentDate;
   res.locals.todaysWithdrawalTotal = todaysWithdrawalTotal || 0;
@@ -109,7 +108,6 @@ async function withdraw(req, res, next) {
     "withdrawal",
     withdrawalAmount
   );
-  console.table(`updatedWithdrawalAmount: ${updateWithdrawalAmount}`);
   return res.json({
     status: 200,
     message: `Withdrew ${updateWithdrawalAmount}`,

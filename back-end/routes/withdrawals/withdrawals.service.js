@@ -15,7 +15,6 @@ async function getDateOfLastWithdrawal(accountNumber) {
     .where({ account_number: accountNumber })
     .first();
 
-  // console.log("dateOfLastWithdrawal: ", dateOfLastWithdrawal);
   return dateOfLastWithdrawal;
 }
 
@@ -57,7 +56,6 @@ async function updateWithdrawalAmount(accountNumber, withdrawalAmount) {
       },
       ["account_number", "daily_total_withdrawn"]
     );
-  console.table(updatedDailyWithdrawalAmount);
   return updatedDailyWithdrawalAmount[0];
 }
 
