@@ -2,12 +2,6 @@ const asyncErrorBoundary = require("../../errors/asyncErrorBoundary");
 const service = require("./balances.service");
 const utils = require("../../utils/utils");
 
-async function listAllBalances(req, res, next) {
-  return res.json({
-    data: await service.listAllBalances(),
-  });
-}
-
 async function listOneBalance(req, res, next) {
   const { accountNumber, currentBalance } = res.locals;
 
@@ -17,6 +11,5 @@ async function listOneBalance(req, res, next) {
 }
 
 module.exports = {
-  listAllBalances: [asyncErrorBoundary(listAllBalances)],
   listOneBalance: [asyncErrorBoundary(listOneBalance)],
 };

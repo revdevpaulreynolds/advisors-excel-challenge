@@ -8,8 +8,11 @@ const checkBillsDenominationUtil = (transactionAmount) => {
 
 async function getOneBalance(req, res, next) {
   const { accountNumber } = req.params;
+  if (accountNumber === "all") {
+    console.log(accountNumber);
+    return res.json({ data: await balancesService.listAllBalances() });
+  }
   const accountNumberInt = parseInt(accountNumber);
-  console.log(accountNumberInt, typeof accountNumberInt);
   if (isNaN(accountNumberInt))
     return next({
       status: 400,
