@@ -9,7 +9,6 @@ async function listOneBalance(accountNumber) {
     .select("balance")
     .where({ account_number: accountNumber })
     .first();
-  console.log(`balance in service: ${balance}`);
   return balance;
 }
 

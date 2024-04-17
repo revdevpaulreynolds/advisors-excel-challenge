@@ -52,10 +52,32 @@ export async function getBalance(accountNumber, signal) {
     signal,
     method: "GET",
   });
-  console.table(`response in api: ${response}`);
+  console.log(`response in getBalance: ${JSON.stringify(response)}`);
   return response;
 }
 
-export async function makeDeposit() {}
+export async function makeDeposit(accountNumber, depositAmount, signal) {
+  const url = new URL(
+    `${API_BASE_URL}/deposits/${accountNumber}/${depositAmount}`
+  );
+  const response = await fetchJson(url, {
+    headers,
+    signal,
+    method: "PUT",
+  });
+  // console.log(`response in makeDeposit: ${JSON.stringify(response)}`);
+  return response;
+}
 
-export async function makeWithdrawal() {}
+export async function makeWithdrawal(accountNumber, withdrawalAmount, signal) {
+  const url = new URL(
+    `${API_BASE_URL}/withdrawals/${accountNumber}/${withdrawalAmount}`
+  );
+  const response = await fetchJson(url, {
+    headers,
+    signal,
+    method: "PUT",
+  });
+  // console.log(`response in makeDeposit: ${JSON.stringify(response)}`);
+  return response;
+}

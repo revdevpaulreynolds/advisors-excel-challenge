@@ -6,6 +6,20 @@ const utilsService = require("../../utils/utils.service");
 
 async function setParams(req, res, next) {
   const { accountNumber, withdrawalAmount } = req.params;
+  const accountNumberInt = parseInt(accountNumber);
+  const withdrawalAmountInt = parseInt(withdrawalAmount);
+
+  if (isNaN(accountNumberInt))
+    return next({
+      status: 400,
+      message: `Your account number must be a number!`,
+    });
+  if (isNaN(withdrawalAmountInt))
+    return next({
+      status: 400,
+      message: `Your deposit amount must be a number!`,
+    });
+
   const isCreditAccount = await utilsService.checkCredit(accountNumber);
   if (isCreditAccount) {
     const creditLimit = await service.getCreditLimit(accountNumber);

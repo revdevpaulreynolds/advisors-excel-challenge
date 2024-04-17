@@ -5,7 +5,7 @@ async function makeDeposit(accountNumber, newBalance) {
     .where({ account_number: accountNumber })
     .update({ balance: newBalance }, ["account_number", "balance"]);
 
-  return query;
+  return query[0];
 }
 
 module.exports = {
