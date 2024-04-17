@@ -8,6 +8,7 @@ const cors = require("cors");
 const balancesRouter = require("./routes/balances/balances.router");
 const depositsRouter = require("./routes/deposits/deposits.router");
 const withdrawalsRouter = require("./routes/withdrawals/withdrawals.router");
+const notFound = require("./errors/notFound");
 
 var app = express();
 
@@ -26,20 +27,24 @@ app.use("/balances", balancesRouter);
 app.use("/deposits", depositsRouter);
 app.use("/withdrawals", withdrawalsRouter);
 
+app.use(notFound);
+
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
-  next(createError(404));
-});
+// app.use(function (req, res, next) {
+//   next(createError(404));
+// });
 
 // error handler
 app.use(function (err, req, res, next) {
+  console.table(err);
   // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
+  // res.locals.message = err.message;
+  // res.locals.error = req.app.get("env") === "development" ? err : {};
+  const { status = 500, message = "Something went wrong!" } = err;
 
   // render the error page
-  res.status(err.status || 500);
-  res.render("error");
+  res.status(status).json({ error: message });
+  // res.render("error");
 });
 
 module.exports = app;

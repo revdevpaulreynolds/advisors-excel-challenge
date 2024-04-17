@@ -9,8 +9,8 @@ async function listOneBalance(accountNumber) {
     .select("balance")
     .where({ account_number: accountNumber })
     .first();
-
-  return balance.balance;
+  console.log(`balance in service: ${balance}`);
+  return balance;
 }
 
 module.exports = {

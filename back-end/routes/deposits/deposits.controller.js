@@ -16,7 +16,7 @@ async function checkCredit(req, res, next) {
   const { accountNumber, depositAmount, isCreditAccount } = res.locals;
 
   if (depositAmount > 1000) {
-    return res.json({
+    return next({
       status: 400,
       message: `The deposit limit is $1000, your deposit is $${depositAmount}`,
     });
@@ -25,7 +25,7 @@ async function checkCredit(req, res, next) {
   const currentBalance = await balanceService.listOneBalance(accountNumber);
   if (isCreditAccount && currentBalance <= 0) {
     if (currentBalance + depositAmount > 0) {
-      return res.json({
+      return next({
         status: 400,
         message: `${depositAmount} is more than your balance of ${currentBalance}`,
       });

@@ -24,7 +24,7 @@ async function checkIfOverdraft(req, res, next) {
   }
   const currentBalance = await balancesService.listOneBalance(accountNumber);
   if (currentBalance < withdrawalAmount) {
-    return res.json({
+    return next({
       status: 400,
       message: `Your withdrawal request of $${withdrawalAmount} exceeds your current balance of $${currentBalance}.`,
     });
@@ -35,7 +35,7 @@ async function checkIfOverdraft(req, res, next) {
 function checkIfOverMaximumWithdrawalAmount(req, res, next) {
   const { withdrawalAmount } = res.locals;
   if (withdrawalAmount > 200) {
-    return res.json({
+    return next({
       status: 400,
       message: `Your withdrawal request of $${withdrawalAmount} exceeds the maximum amount of $200.`,
     });
@@ -46,7 +46,7 @@ function checkIfOverMaximumWithdrawalAmount(req, res, next) {
 function checkBillsDenomination(req, res, next) {
   const { withdrawalAmount } = res.locals;
   if (!checkBillsDenominationUtil(withdrawalAmount)) {
-    return res.json({
+    return next({
       status: 400,
       message: `This machine dispenses bills in multiples of $5`,
     });
@@ -59,11 +59,7 @@ async function checkDailyWithdrawalAmount(req, res, next) {
   const todaysDate = new Date();
   const currentMonth = todaysDate.getMonth() + 1;
   const currentDate = todaysDate.getDate();
-  const dateOfLastWithdrawal = await service.getDateOfLastWithdrawal(
-    accountNumber,
-    currentMonth,
-    currentDate
-  );
+
   const { daily_total_withdrawn: todaysWithdrawalTotal } =
     await service.getDailyWithdrawalTotal(
       accountNumber,
@@ -71,7 +67,7 @@ async function checkDailyWithdrawalAmount(req, res, next) {
       currentDate
     );
   if (todaysWithdrawalTotal + withdrawalAmount > 400) {
-    return res.json({
+    return next({
       status: 400,
       message: "You cannot withdraw more than $400 in one day.",
     });
@@ -90,11 +86,7 @@ async function withdraw(req, res, next) {
     currentDate,
     todaysWithdrawalTotal,
   } = res.locals;
-  const updateWithdrawalDate = await service.updateWithdrawalDate(
-    accountNumber,
-    currentMonth,
-    currentDate
-  );
+  service.updateWithdrawalDate(accountNumber, currentMonth, currentDate);
 
   const newDailyWithdrawalTotal = withdrawalAmount + todaysWithdrawalTotal;
   const { daily_total_withdrawn: updateWithdrawalAmount } =

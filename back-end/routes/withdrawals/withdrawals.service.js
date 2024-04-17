@@ -8,16 +8,6 @@ async function getCreditLimit(accountNumber) {
   return creditLimit.credit_limit;
 }
 
-async function getDateOfLastWithdrawal(accountNumber) {
-  const dateOfLastWithdrawal = await knex("daily_withdrawal_totals")
-    .column("month_updated", "date_updated")
-    .select("*")
-    .where({ account_number: accountNumber })
-    .first();
-
-  return dateOfLastWithdrawal;
-}
-
 async function getDailyWithdrawalTotal(
   accountNumber,
   currentMonth,
@@ -61,7 +51,6 @@ async function updateWithdrawalAmount(accountNumber, withdrawalAmount) {
 
 module.exports = {
   getCreditLimit,
-  getDateOfLastWithdrawal,
   getDailyWithdrawalTotal,
   updateWithdrawalDate,
   updateWithdrawalAmount,

@@ -10,11 +10,12 @@ async function listAllBalances(req, res, next) {
 async function listOneBalance(req, res, next) {
   const { accountNumber } = req.params;
   const balance = await service.listOneBalance(accountNumber);
-  if (!balance)
-    return res.json({
+  if (!balance) {
+    return next({
       status: 404,
       message: `${accountNumber} is not an existing account number`,
     });
+  }
   return res.json({
     data: balance,
   });
