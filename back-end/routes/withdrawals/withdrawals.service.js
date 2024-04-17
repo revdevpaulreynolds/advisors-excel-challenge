@@ -37,7 +37,7 @@ async function updateWithdrawalDate(accountNumber, currentMonth, currentDate) {
   return updatedDate;
 }
 
-async function updateWithdrawalAmount(accountNumber, withdrawalAmount) {
+async function updateDailyWithdrawalTotal(accountNumber, withdrawalAmount) {
   const updatedDailyWithdrawalAmount = await knex("daily_withdrawal_totals")
     .where({ account_number: accountNumber })
     .update(
@@ -49,9 +49,22 @@ async function updateWithdrawalAmount(accountNumber, withdrawalAmount) {
   return updatedDailyWithdrawalAmount[0];
 }
 
+async function makeWithdrawal(accountNumber, updatedBalanceAfterWithdraw) {
+  const newBalanceAfterWithdraw = await knex("balances")
+    .where({ account_number: accountNumber })
+    .update(
+      {
+        balance: updatedBalanceAfterWithdraw,
+      },
+      ["account_number", "balance"]
+    );
+  return newBalanceAfterWithdraw[0];
+}
+
 module.exports = {
   getCreditLimit,
   getDailyWithdrawalTotal,
   updateWithdrawalDate,
-  updateWithdrawalAmount,
+  updateDailyWithdrawalTotal,
+  makeWithdrawal,
 };

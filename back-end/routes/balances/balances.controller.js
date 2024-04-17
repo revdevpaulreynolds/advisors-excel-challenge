@@ -1,5 +1,6 @@
 const asyncErrorBoundary = require("../../errors/asyncErrorBoundary");
 const service = require("./balances.service");
+const utils = require("../../utils/utils");
 
 async function listAllBalances(req, res, next) {
   return res.json({
@@ -8,16 +9,10 @@ async function listAllBalances(req, res, next) {
 }
 
 async function listOneBalance(req, res, next) {
-  const { accountNumber } = req.params;
-  const balance = await service.listOneBalance(accountNumber);
-  if (!balance) {
-    return next({
-      status: 404,
-      message: `${accountNumber} is not an existing account number`,
-    });
-  }
+  const { accountNumber, currentBalance } = res.locals;
+
   return res.json({
-    data: balance,
+    data: { account_number: accountNumber, balance: currentBalance },
   });
 }
 

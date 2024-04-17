@@ -15,6 +15,7 @@ function Home({
 
   const handleSubmit = async (e) => {
     setResponse()
+    setError()
     e.preventDefault();
     e.stopPropagation();
     const ac = new AbortController();
@@ -23,7 +24,8 @@ function Home({
         getBalance(request.account_number, ac.signal)
           .then(res => {
             console.log(`res in handlesubmit: ${JSON.stringify(res)}`)
-            setResponse(res.balance).then(console.log(`Response in component's API call: ${response}}`))
+            setResponse(res)
+            console.log(`Response in component's API call: ${JSON.stringify(response)}`)
           }).catch(err => {
             console.log(`error in handlesubmit: ${err}`)
             setError(err)
@@ -64,16 +66,14 @@ function Home({
         </option>
       ))}
     </select>
-      <input type="text" id="account_number" name="account_number" value={request.account_number} required placeholder="Account Number" onChange={changeHandler} />
-      {transactionOptions[request.request_type]?.showAmountField && <input type="text" id="transaction_amount" name="transaction_amount" value={request.transaction_amount || ''} placeholder="Transaction Amount" onChange={changeHandler} />}
+    <input type="text" id="account_number" name="account_number" value={request.account_number} required placeholder="Account Number" onChange={changeHandler} />
+    {transactionOptions[request.request_type]?.showAmountField && <input type="text" id="transaction_amount" name="transaction_amount" value={request.transaction_amount || ''} placeholder="Transaction Amount" onChange={changeHandler} />}
     <div>
-
       <input type='submit' disabled={!request.request_type}/>
     </div>
     </form>
     <p>{`${request.account_number}, ${request.transaction_amount}, ${request.request_type}`}</p>
-    <p>{response?.message ||`No good response yet`}</p>
-    <p>{response && `Your account number ${response.account_number} has a new balance of ${response.balance}`}</p>
+    <p>{response ? `Your account number ${response.account_number} has a new balance of ${response.balance}` : `No good response yet`}</p>
     <p>{error?.message || 'Lucky you, no errors'}</p>
     </>
   )

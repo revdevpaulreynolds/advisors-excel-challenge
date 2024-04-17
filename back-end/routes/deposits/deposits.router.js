@@ -3,7 +3,7 @@ const methodNotAllowed = require("../../errors/methodNotAllowed");
 const controller = require("./deposits.controller");
 
 router
-  .route("/:accountNumber/:depositAmount")
+  .route("/:depositAmount")
   .put(controller.makeDeposit)
   .all(methodNotAllowed);
 

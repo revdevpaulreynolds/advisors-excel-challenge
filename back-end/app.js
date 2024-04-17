@@ -4,6 +4,7 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const cors = require("cors");
+const utils = require("./utils/utils");
 
 const balancesRouter = require("./routes/balances/balances.router");
 const depositsRouter = require("./routes/deposits/deposits.router");
@@ -22,10 +23,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/:accountNumber", utils.getOneBalance);
 
-app.use("/balances", balancesRouter);
-app.use("/deposits", depositsRouter);
-app.use("/withdrawals", withdrawalsRouter);
+app.use("/:accountNumber/balances", balancesRouter);
+app.use("/:accountNumber/deposits", depositsRouter);
+app.use("/:accountNumber/withdrawals", withdrawalsRouter);
 
 app.use(notFound);
 

@@ -8,6 +8,14 @@ async function checkCredit(accountNumber) {
   return accountType.type === "credit";
 }
 
+async function getCurrentBalance(accountNumber) {
+  const currentBalance = await knex("balances")
+    .where({ account_number: accountNumber })
+    .select("balance")
+    .first();
+  return currentBalance;
+}
+
 async function addTransactionActivityLog(
   accountNumber,
   transactionType,
@@ -23,5 +31,6 @@ async function addTransactionActivityLog(
 
 module.exports = {
   checkCredit,
+  getCurrentBalance,
   addTransactionActivityLog,
 };

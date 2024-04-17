@@ -4,7 +4,11 @@ const balanceService = require("../balances/balances.service");
 const utilsService = require("../../utils/utils.service");
 
 async function setParams(req, res, next) {
-  const { accountNumber, depositAmount } = req.params;
+  const { depositAmount } = req.params;
+  const { accountNumber, currentBalance } = res.locals;
+  console.log(
+    `currentBalance in deposits controller setparams: ${currentBalance}`
+  );
   const accountNumberInt = parseInt(accountNumber);
   const depositAmountInt = parseInt(depositAmount);
 

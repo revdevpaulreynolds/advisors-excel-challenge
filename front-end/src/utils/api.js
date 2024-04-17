@@ -46,7 +46,7 @@ async function fetchJson(url, options, onCancel) {
 }
 
 export async function getBalance(accountNumber, signal) {
-  const url = new URL(`${API_BASE_URL}/balances/${accountNumber}`);
+  const url = new URL(`${API_BASE_URL}/${accountNumber}/balances`);
   const response = await fetchJson(url, {
     headers,
     signal,
@@ -58,7 +58,7 @@ export async function getBalance(accountNumber, signal) {
 
 export async function makeDeposit(accountNumber, depositAmount, signal) {
   const url = new URL(
-    `${API_BASE_URL}/deposits/${accountNumber}/${depositAmount}`
+    `${API_BASE_URL}/${accountNumber}/deposits/${depositAmount}`
   );
   const response = await fetchJson(url, {
     headers,
@@ -71,7 +71,7 @@ export async function makeDeposit(accountNumber, depositAmount, signal) {
 
 export async function makeWithdrawal(accountNumber, withdrawalAmount, signal) {
   const url = new URL(
-    `${API_BASE_URL}/withdrawals/${accountNumber}/${withdrawalAmount}`
+    `${API_BASE_URL}/${accountNumber}/withdrawals/${withdrawalAmount}`
   );
   const response = await fetchJson(url, {
     headers,

@@ -3,7 +3,7 @@ const controller = require("./withdrawals.controller");
 const methodNotAllowed = require("../../errors/methodNotAllowed");
 
 router
-  .route("/:accountNumber/:withdrawalAmount")
+  .route("/:withdrawalAmount")
   .put(controller.withdraw)
   .all(methodNotAllowed);
 

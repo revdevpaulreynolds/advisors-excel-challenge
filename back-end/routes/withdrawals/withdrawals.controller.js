@@ -1,19 +1,16 @@
 const asyncErrorBoundary = require("../../errors/asyncErrorBoundary");
 const service = require("./withdrawals.service");
 const { checkBillsDenominationUtil } = require("../../utils/utils");
-const balancesService = require("../balances/balances.service");
+// const balancesService = require("../balances/balances.service");
 const utilsService = require("../../utils/utils.service");
+const utils = require("../../utils/utils");
+const balanceController = require("../balances/balances.controller");
 
 async function setParams(req, res, next) {
-  const { accountNumber, withdrawalAmount } = req.params;
-  const accountNumberInt = parseInt(accountNumber);
+  const { withdrawalAmount } = req.params;
+  const { accountNumber } = res.locals;
   const withdrawalAmountInt = parseInt(withdrawalAmount);
 
-  if (isNaN(accountNumberInt))
-    return next({
-      status: 400,
-      message: `Your account number must be a number!`,
-    });
   if (isNaN(withdrawalAmountInt))
     return next({
       status: 400,
@@ -31,18 +28,35 @@ async function setParams(req, res, next) {
   next();
 }
 
+async function checkIfOverCreditLimit(req, res, next) {
+  const { withdrawalAmount, isCreditAccount, creditLimit, currentBalance } =
+    res.locals;
+
+  if (!isCreditAccount) return next();
+  const intendedNewCreditBalance = -Math.abs(currentBalance - withdrawalAmount);
+  const relationToCreditLimit = creditLimit + intendedNewCreditBalance;
+  if (relationToCreditLimit < 0)
+    return next({
+      status: 400,
+      message: `Your credit limit of ${creditLimit} is exceeded by ${-relationToCreditLimit}`,
+    });
+  next();
+}
+
 async function checkIfOverdraft(req, res, next) {
-  const { accountNumber, withdrawalAmount, isCreditAccount } = res.locals;
+  const { accountNumber, withdrawalAmount, isCreditAccount, currentBalance } =
+    res.locals;
   if (isCreditAccount) {
     return next();
   }
-  const currentBalance = await balancesService.listOneBalance(accountNumber);
   if (currentBalance < withdrawalAmount) {
     return next({
       status: 400,
       message: `Your withdrawal request of $${withdrawalAmount} exceeds your current balance of $${currentBalance}.`,
     });
   }
+  console.log(currentBalance, withdrawalAmount);
+  res.locals.updatedBalanceAfterWithdraw = currentBalance - withdrawalAmount;
   next();
 }
 
@@ -99,12 +113,13 @@ async function withdraw(req, res, next) {
     currentMonth,
     currentDate,
     todaysWithdrawalTotal,
+    updatedBalanceAfterWithdraw,
   } = res.locals;
   service.updateWithdrawalDate(accountNumber, currentMonth, currentDate);
 
   const newDailyWithdrawalTotal = withdrawalAmount + todaysWithdrawalTotal;
   const { daily_total_withdrawn: updateWithdrawalAmount } =
-    await service.updateWithdrawalAmount(
+    await service.updateDailyWithdrawalTotal(
       accountNumber,
       newDailyWithdrawalTotal
     );
@@ -114,15 +129,23 @@ async function withdraw(req, res, next) {
     "withdrawal",
     withdrawalAmount
   );
+
+  console.log(`updatedBalanceAfterWithdraw: ${updatedBalanceAfterWithdraw}`);
+
+  const withdrawCompletedConfirmation = await service.makeWithdrawal(
+    accountNumber,
+    updatedBalanceAfterWithdraw
+  );
+
   return res.json({
-    status: 200,
-    message: `Withdrew ${updateWithdrawalAmount}`,
+    data: withdrawCompletedConfirmation,
   });
 }
 
 module.exports = {
   withdraw: [
     asyncErrorBoundary(setParams),
+    checkIfOverCreditLimit,
     asyncErrorBoundary(checkIfOverdraft),
     checkIfOverMaximumWithdrawalAmount,
     checkBillsDenomination,
