@@ -59,5 +59,6 @@ CREATE TABLE activity_log (
     account_number INTEGER,
     transaction_type VARCHAR,
     transaction_amount INTEGER,
+    new_balance INTEGER,
     CHECK (transaction_amount <= 1000)
 );

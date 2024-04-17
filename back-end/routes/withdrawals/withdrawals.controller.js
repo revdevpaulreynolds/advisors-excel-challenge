@@ -8,13 +8,13 @@ const balanceController = require("../balances/balances.controller");
 
 async function setParams(req, res, next) {
   const { withdrawalAmount } = req.params;
-  const { accountNumber } = res.locals;
+  const { accountNumber, currentBalance } = res.locals;
   const withdrawalAmountInt = parseInt(withdrawalAmount);
 
   if (isNaN(withdrawalAmountInt))
     return next({
       status: 400,
-      message: `Your deposit amount must be a number!`,
+      message: `Your withdrawal amount must be a number!`,
     });
 
   const isCreditAccount = await utilsService.checkCredit(accountNumber);
@@ -23,8 +23,8 @@ async function setParams(req, res, next) {
     res.locals.creditLimit = creditLimit;
   }
   res.locals.isCreditAccount = isCreditAccount;
-  res.locals.withdrawalAmount = parseInt(withdrawalAmount);
-  res.locals.accountNumber = parseInt(accountNumber);
+  res.locals.withdrawalAmount = withdrawalAmountInt;
+  res.locals.updatedBalanceAfterWithdraw = currentBalance - withdrawalAmountInt;
   next();
 }
 
@@ -44,8 +44,7 @@ async function checkIfOverCreditLimit(req, res, next) {
 }
 
 async function checkIfOverdraft(req, res, next) {
-  const { accountNumber, withdrawalAmount, isCreditAccount, currentBalance } =
-    res.locals;
+  const { withdrawalAmount, isCreditAccount, currentBalance } = res.locals;
   if (isCreditAccount) {
     return next();
   }
@@ -56,7 +55,6 @@ async function checkIfOverdraft(req, res, next) {
     });
   }
   console.log(currentBalance, withdrawalAmount);
-  res.locals.updatedBalanceAfterWithdraw = currentBalance - withdrawalAmount;
   next();
 }
 
@@ -115,22 +113,22 @@ async function withdraw(req, res, next) {
     todaysWithdrawalTotal,
     updatedBalanceAfterWithdraw,
   } = res.locals;
+
   service.updateWithdrawalDate(accountNumber, currentMonth, currentDate);
 
   const newDailyWithdrawalTotal = withdrawalAmount + todaysWithdrawalTotal;
-  const { daily_total_withdrawn: updateWithdrawalAmount } =
-    await service.updateDailyWithdrawalTotal(
-      accountNumber,
-      newDailyWithdrawalTotal
-    );
+  // const { daily_total_withdrawn: updateWithdrawalAmount } =
+  await service.updateDailyWithdrawalTotal(
+    accountNumber,
+    newDailyWithdrawalTotal
+  );
 
   await utilsService.addTransactionActivityLog(
     accountNumber,
     "withdrawal",
-    withdrawalAmount
+    withdrawalAmount,
+    updatedBalanceAfterWithdraw
   );
-
-  console.log(`updatedBalanceAfterWithdraw: ${updatedBalanceAfterWithdraw}`);
 
   const withdrawCompletedConfirmation = await service.makeWithdrawal(
     accountNumber,

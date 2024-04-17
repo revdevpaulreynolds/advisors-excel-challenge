@@ -9,14 +9,8 @@ async function setParams(req, res, next) {
   console.log(
     `currentBalance in deposits controller setparams: ${currentBalance}`
   );
-  const accountNumberInt = parseInt(accountNumber);
   const depositAmountInt = parseInt(depositAmount);
 
-  if (isNaN(accountNumberInt))
-    return next({
-      status: 400,
-      message: `Your account number must be a number!`,
-    });
   if (isNaN(depositAmountInt))
     return next({
       status: 400,
@@ -26,12 +20,17 @@ async function setParams(req, res, next) {
 
   res.locals.isCreditAccount = isCreditAccount;
   res.locals.depositAmount = depositAmountInt;
-  res.locals.accountNumber = accountNumberInt;
+  res.locals.updatedBalanceAfterDeposit = currentBalance + depositAmountInt;
   next();
 }
 
 async function checkCredit(req, res, next) {
-  const { accountNumber, depositAmount, isCreditAccount } = res.locals;
+  const {
+    currentBalance,
+    depositAmount,
+    isCreditAccount,
+    updatedBalanceAfterDeposit,
+  } = res.locals;
 
   if (depositAmount > 1000) {
     return next({
@@ -40,29 +39,24 @@ async function checkCredit(req, res, next) {
     });
   }
 
-  const { balance } = await balanceService.listOneBalance(accountNumber);
-  const currentBalance = parseInt(balance);
-  console.log(currentBalance, typeof currentBalance);
-  if (isCreditAccount && currentBalance <= 0) {
-    if (currentBalance + depositAmount > 0) {
-      return next({
-        status: 400,
-        message: `${depositAmount} is more than your balance of ${currentBalance}`,
-      });
-    }
+  if (isCreditAccount && updatedBalanceAfterDeposit > 0) {
+    return next({
+      status: 400,
+      message: `${depositAmount} is more than your balance of ${currentBalance}`,
+    });
   }
-  res.locals.currentBalance = currentBalance;
   next();
 }
 
-async function updateBalance(req, res, next) {
+async function makeDeposit(req, res, next) {
   const { accountNumber, currentBalance, depositAmount } = res.locals;
+  const newBalance = currentBalance + depositAmount;
   await utilsService.addTransactionActivityLog(
     accountNumber,
     "deposit",
-    depositAmount
+    depositAmount,
+    newBalance
   );
-  const newBalance = currentBalance + depositAmount;
   const depositResponse = await service.makeDeposit(accountNumber, newBalance);
   // console.log(`depositResponse in deposit controller: ${depositResponse}`);
 
@@ -75,6 +69,6 @@ module.exports = {
   makeDeposit: [
     asyncErrorBoundary(setParams),
     asyncErrorBoundary(checkCredit),
-    asyncErrorBoundary(updateBalance),
+    asyncErrorBoundary(makeDeposit),
   ],
 };
