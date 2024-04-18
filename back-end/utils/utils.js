@@ -10,7 +10,9 @@ async function getOneBalance(req, res, next) {
   const { accountNumber } = req.params;
   if (accountNumber === "all") {
     console.log(accountNumber);
-    return res.json({ data: await balancesService.listAllBalances() });
+    return res.json({
+      data: { allBalances: await balancesService.listAllBalances() },
+    });
   }
   const accountNumberInt = parseInt(accountNumber);
   if (isNaN(accountNumberInt))

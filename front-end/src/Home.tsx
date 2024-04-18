@@ -1,6 +1,23 @@
 import { useState } from "react";
-import {PropTypes} from 'prop-types';
+import PropTypes from 'prop-types';
 import { getBalance, makeDeposit, makeWithdrawal } from "./utils/api";
+import React from "react";
+
+type Request = {
+  account_number: string,
+  transaction_amount: number,
+  request_type: string,
+}
+
+type Response = {
+  account_number?: number | null,
+  balance?: number | null,
+  allBalances?: Response[] | null
+}
+
+type Error = {
+  message?: string | null
+}
 
 function Home({
   initialState = {
@@ -9,19 +26,19 @@ function Home({
     request_type: ''
   },
 }) {
-  const [request, setRequest] = useState(initialState);
-  const [response, setResponse] = useState();
-  const [error, setError] = useState();
+  const [request, setRequest] = useState<Request>(initialState);
+  const [response, setResponse] = useState<Response>({});
+  const [error, setError] = useState<Error>({});
 
   const handleSubmit = async (e) => {
-    setResponse()
-    setError()
     e.preventDefault();
     e.stopPropagation();
+    setResponse({account_number: null, balance: null})
+    setError({message: null})
     const ac = new AbortController();
     switch (request.request_type) {
       case 'balanceInquiry':
-        getBalance(request.account_number, ac.signal)
+        await getBalance(request.account_number, ac.signal)
           .then(res => {
             console.log(`res in handlesubmit: ${JSON.stringify(res)}`)
             setResponse(res)
@@ -44,8 +61,8 @@ function Home({
     return () => ac.abort();
   }
 
-  const changeHandler = async ({target: {name, value}}) => {
-    await setRequest(prevState => ({...prevState, [name]: value}))
+  const changeHandler = ({target: {name, value}}) => {
+    setRequest(prevState => ({...prevState, [name]: value}))
   }
 
   const transactionOptions = {
@@ -73,7 +90,12 @@ function Home({
     </div>
     </form>
     <p>{`${request.account_number}, ${request.transaction_amount}, ${request.request_type}`}</p>
-    <p>{response ? `Your account number ${response.account_number} has a new balance of ${response.balance}` : `No good response yet`}</p>
+    <p>{response?.account_number ? `Your account number ${response.account_number} has a new balance of $${response.balance}` : `No good response yet`}</p>
+    <div>
+      {response?.allBalances && response.allBalances.map((account, i) => (
+        <p key={i}>Your account number {account.account_number} has a new balance of ${account.balance}</p>
+      ))}
+    </div>
     <p>{error?.message || 'Lucky you, no errors'}</p>
     </>
   )

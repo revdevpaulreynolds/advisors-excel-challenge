@@ -52,7 +52,6 @@ export async function getBalance(accountNumber, signal) {
     signal,
     method: "GET",
   });
-  console.log(`response in getBalance: ${JSON.stringify(response)}`);
   return response;
 }
 
@@ -65,7 +64,6 @@ export async function makeDeposit(accountNumber, depositAmount, signal) {
     signal,
     method: "PUT",
   });
-  // console.log(`response in makeDeposit: ${JSON.stringify(response)}`);
   return response;
 }
 
@@ -78,6 +76,5 @@ export async function makeWithdrawal(accountNumber, withdrawalAmount, signal) {
     signal,
     method: "PUT",
   });
-  // console.log(`response in makeDeposit: ${JSON.stringify(response)}`);
   return response;
 }

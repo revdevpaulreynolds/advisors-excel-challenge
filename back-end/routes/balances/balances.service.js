@@ -1,7 +1,7 @@
 const knex = require("../../db/connection.ts");
 
 async function listAllBalances() {
-  return await knex("accounts");
+  return await knex("balances");
 }
 
 async function listOneBalance(accountNumber) {
