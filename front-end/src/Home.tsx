@@ -2,6 +2,8 @@ import { useState } from "react";
 import PropTypes from 'prop-types';
 import { getBalance, makeDeposit, makeWithdrawal } from "./utils/api";
 import React from "react";
+import {Button, FormControl} from '@mui/material';
+import Form from './Form'
 
 type Request = {
   account_number: string,
@@ -65,32 +67,14 @@ function Home({
     setRequest(prevState => ({...prevState, [name]: value}))
   }
 
-  const transactionOptions = {
-    balanceInquiry: {displayName: 'Balance Inquiry', showAmountField: false},
-    deposit: {displayName: 'Deposit', showAmountField: true},
-    withdrawal: {displayName: 'Withdrawal', showAmountField: true},
-  }
-
   return (
     <>
     <h1>Welcome to Advisors Excel ATM!</h1>
-    <form onSubmit={handleSubmit}>
-    <select name="request_type" id="request_type" onChange={changeHandler}>
-      <option value="">--Choose your Transaction--</option>
-      {Object.keys(transactionOptions).map((transactionType, i) => (
-        <option key={i} value={transactionType}>
-          {transactionOptions[transactionType].displayName}
-        </option>
-      ))}
-    </select>
-    <input type="text" id="account_number" name="account_number" value={request.account_number} required placeholder="Account Number" onChange={changeHandler} />
-    {transactionOptions[request.request_type]?.showAmountField && <input type="text" id="transaction_amount" name="transaction_amount" value={request.transaction_amount || ''} placeholder="Transaction Amount" onChange={changeHandler} />}
-    <div>
-      <input type='submit' disabled={!request.request_type}/>
-    </div>
-    </form>
+
+ 
+      <Form request={request} handleSubmit={handleSubmit} handleChange={changeHandler}/>
     <p>{`${request.account_number}, ${request.transaction_amount}, ${request.request_type}`}</p>
-    <p>{response?.account_number ? `Your account number ${response.account_number} has a new balance of $${response.balance}` : `No good response yet`}</p>
+    <p>{response?.account_number ? `Your account number ${response.account_number} has a new balance of $${response.balance}` : null}</p>
     <div>
       {response?.allBalances && response.allBalances.map((account, i) => (
         <p key={i}>Your account number {account.account_number} has a new balance of ${account.balance}</p>

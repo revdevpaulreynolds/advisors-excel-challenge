@@ -1,6 +1,6 @@
 const API_BASE_URL =
   // eslint-disable-next-line no-undef
-  import.meta.env.VITE_REACT_APP_API_BASE_URL || "http://localhost:5000";
+  import.meta.env.VITE_REACT_APP_API_BASE_URL || "http://localhost:3000";
 
 /**
  * Defines the default headers for these functions to work with `json-server`
