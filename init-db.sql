@@ -32,7 +32,7 @@ UPDATE accounts SET credit_limit = 100000 WHERE account_number = 9;
 -- make table for updating balances
 DROP TABLE IF EXISTS balances;
 CREATE TABLE balances (
-    account_number INTEGER PRIMARY KEY,
+    account_number INTEGER PRIMARY KEY REFERENCES accounts(account_number) unique,
     balance INTEGER NOT NULL
 );
 
@@ -43,7 +43,7 @@ SELECT account_number, amount FROM accounts;
 -- make table for recording daily withdrawals
 DROP TABLE IF EXISTS daily_withdrawal_totals;
 CREATE TABLE daily_withdrawal_totals (
-    account_number INTEGER PRIMARY KEY,
+    account_number INTEGER PRIMARY KEY REFERENCES accounts(account_number),
     month_updated INTEGER,
     date_updated INTEGER,
     daily_total_withdrawn INTEGER,
@@ -56,8 +56,8 @@ INSERT INTO daily_withdrawal_totals (account_number)
 
 DROP TABLE IF EXISTS activity_log;
 CREATE TABLE activity_log (
-    account_number INTEGER,
-    transaction_type VARCHAR,
+    account_number INTEGER REFERENCES accounts(account_number) NOT NULL,
+    transaction_type VARCHAR NOT NULL,
     transaction_amount INTEGER,
     new_balance INTEGER,
     CHECK (transaction_amount <= 1000)
