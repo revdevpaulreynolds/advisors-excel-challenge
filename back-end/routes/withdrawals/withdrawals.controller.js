@@ -1,10 +1,7 @@
 const asyncErrorBoundary = require("../../errors/asyncErrorBoundary");
 const service = require("./withdrawals.service");
 const { checkBillsDenominationUtil } = require("../../utils/utils");
-// const balancesService = require("../balances/balances.service");
 const utilsService = require("../../utils/utils.service");
-const utils = require("../../utils/utils");
-const balanceController = require("../balances/balances.controller");
 
 async function setParams(req, res, next) {
   const { withdrawalAmount } = req.params;
@@ -114,7 +111,7 @@ async function withdraw(req, res, next) {
     updatedBalanceAfterWithdraw,
   } = res.locals;
 
-  service.updateWithdrawalDate(accountNumber, currentMonth, currentDate);
+  await service.updateWithdrawalDate(accountNumber, currentMonth, currentDate);
 
   const newDailyWithdrawalTotal = withdrawalAmount + todaysWithdrawalTotal;
   // const { daily_total_withdrawn: updateWithdrawalAmount } =
