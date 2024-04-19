@@ -22,7 +22,6 @@ async function addTransactionActivityLog(
   transactionAmount,
   newBalance
 ) {
-  // console.log(accountNumber, transactionType, transactionAmount);
   await knex("activity_log").insert({
     account_number: accountNumber,
     transaction_type: transactionType,

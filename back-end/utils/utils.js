@@ -32,10 +32,8 @@ async function getOneBalance(req, res, next) {
   }
 
   console.log(`balance in utils: ${balance}`);
-  if (!isNaN(balance)) {
-    res.locals.currentBalance = balance;
-    res.locals.accountNumber = accountNumberInt;
-  }
+  res.locals.currentBalance = balance;
+  res.locals.accountNumber = accountNumberInt;
   return next();
 }
 
