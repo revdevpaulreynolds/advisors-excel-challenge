@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, FormControl} from '@mui/material';
+import {Button, FormControl, InputLabel, MenuItem, Select, TextField} from '@mui/material';
 
 function Form ({request, handleSubmit, handleChange}) {
 
@@ -10,41 +10,41 @@ function Form ({request, handleSubmit, handleChange}) {
   }
 
   return (
-    <>
-      <FormControl>
-        <Button>Submit</Button>
-      </FormControl>
+    <div className="bg-white">
       <form onSubmit={handleSubmit}>
-        <select name="request_type" id="request_type" onChange={handleChange}>
-          <option value="">--Choose your Transaction--</option>
+        <FormControl fullWidth>
+          <InputLabel id="request-type-select">Choose your transaction</InputLabel>
+          <Select labelId="request-type-select" id="request_type" label='Choose your transaction' name='request_type' value={request.request_type} onChange={handleChange}>
           {Object.keys(transactionOptions).map((transactionType, i) => (
-            <option key={i} value={transactionType}>
-              {transactionOptions[transactionType].displayName}
-            </option>
-          ))}
-        </select>
-        <input 
-          type="text" 
-          id="account_number" 
-          name="account_number" 
-          value={request.account_number} 
-          required placeholder="Account Number" 
-          onChange={handleChange} 
-        />
-        {transactionOptions[request.request_type]?.showAmountField && (
-          <input 
-            type="text" 
+              <MenuItem key={i} value={transactionType}>
+                {transactionOptions[transactionType].displayName}
+              </MenuItem>
+            ))}
+          </Select>
+          <div className="flex justify-between">
+
+
+          <TextField 
+            id="account_number" 
+            name="account_number" 
+            label="Account Number"
+            required 
+            onChange={handleChange}
+            value={request.account_number}
+          />
+          {transactionOptions[request.request_type]?.showAmountField && (
+            <TextField 
             id="transaction_amount" 
             name="transaction_amount" 
+            label={`${transactionOptions[request.request_type].displayName} Amount`}
             value={request.transaction_amount || ''} 
-            placeholder="Transaction Amount" 
             onChange={handleChange} />
-        )}
-        <div>
-          <input type='submit' disabled={!request.request_type}/>
-        </div>
+          )}
+          </div>
+          <Button type="submit" variant="contained" color="success" disabled={!request.request_type}>Submit</Button>
+        </FormControl>
       </form>
-    </>
+    </div>
   )
 }
 

@@ -61,7 +61,11 @@ async function makeDeposit(req, res, next) {
   // console.log(`depositResponse in deposit controller: ${depositResponse}`);
 
   return res.json({
-    data: depositResponse,
+    data: {
+      ...depositResponse,
+      transaction_amount: depositAmount,
+      transaction_type: "deposit",
+    },
   });
 }
 

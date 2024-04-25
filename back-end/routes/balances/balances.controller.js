@@ -6,7 +6,11 @@ async function listOneBalance(req, res, next) {
   const { accountNumber, currentBalance } = res.locals;
 
   return res.json({
-    data: { account_number: accountNumber, balance: currentBalance },
+    data: {
+      account_number: accountNumber,
+      balance: currentBalance,
+      transaction_type: "balanceInquiry",
+    },
   });
 }
 

@@ -133,7 +133,11 @@ async function withdraw(req, res, next) {
   );
 
   return res.json({
-    data: withdrawCompletedConfirmation,
+    data: {
+      ...withdrawCompletedConfirmation,
+      transaction_type: "withdrawal",
+      transaction_amount: withdrawalAmount,
+    },
   });
 }
 
