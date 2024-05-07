@@ -16,7 +16,6 @@ const formatMoney = (amountToFormat) => {
 async function getOneBalance(req, res, next) {
   const { accountNumber } = req.params;
   if (accountNumber === "all") {
-    console.log(accountNumber);
     return res.json({
       data: { allBalances: await balancesService.listAllBalances() },
     });
@@ -38,7 +37,6 @@ async function getOneBalance(req, res, next) {
     });
   }
 
-  console.log(`balance in utils: ${balance}`);
   res.locals.currentBalance = balance;
   res.locals.accountNumber = accountNumberInt;
   return next();

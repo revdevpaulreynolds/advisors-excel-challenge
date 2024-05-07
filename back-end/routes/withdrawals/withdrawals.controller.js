@@ -58,7 +58,6 @@ async function checkIfOverdraft(req, res, next) {
       )} exceeds your current balance of ${formatMoney(currentBalance)}.`,
     });
   }
-  console.log(currentBalance, withdrawalAmount);
   next();
 }
 

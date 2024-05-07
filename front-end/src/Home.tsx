@@ -41,7 +41,6 @@ function Home({
   const [displayBalance, setDisplayBalance] = useState<string | null>(null);
 
   const formatBalance = (balance: number): string => {
-    console.log(`balance in formatBalance: ${balance}`);
     return balance.toLocaleString("en-US", {
       style: "currency",
       currency: "USD",

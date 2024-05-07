@@ -6,9 +6,6 @@ const utilsService = require("../../utils/utils.service");
 async function setParams(req, res, next) {
   const { depositAmount } = req.params;
   const { accountNumber, currentBalance } = res.locals;
-  console.log(
-    `currentBalance in deposits controller setparams: ${currentBalance}`
-  );
   const depositAmountInt = parseInt(depositAmount);
 
   if (isNaN(depositAmountInt))
@@ -58,7 +55,6 @@ async function makeDeposit(req, res, next) {
     newBalance
   );
   const depositResponse = await service.makeDeposit(accountNumber, newBalance);
-  // console.log(`depositResponse in deposit controller: ${depositResponse}`);
 
   return res.json({
     data: {
