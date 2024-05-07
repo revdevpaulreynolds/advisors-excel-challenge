@@ -1,6 +1,9 @@
 const asyncErrorBoundary = require("../../errors/asyncErrorBoundary");
 const service = require("./withdrawals.service");
-const { checkBillsDenominationUtil } = require("../../utils/utils");
+const {
+  checkBillsDenominationUtil,
+  formatMoney,
+} = require("../../utils/utils");
 const utilsService = require("../../utils/utils.service");
 
 async function setParams(req, res, next) {
@@ -35,7 +38,9 @@ async function checkIfOverCreditLimit(req, res, next) {
   if (relationToCreditLimit < 0)
     return next({
       status: 400,
-      message: `Your credit limit of ${creditLimit} is exceeded by ${-relationToCreditLimit}`,
+      message: `Your credit limit of ${formatMoney(
+        creditLimit
+      )} is exceeded by ${formatMoney(relationToCreditLimit)}`,
     });
   next();
 }
@@ -48,7 +53,9 @@ async function checkIfOverdraft(req, res, next) {
   if (currentBalance < withdrawalAmount) {
     return next({
       status: 400,
-      message: `Your withdrawal request of $${withdrawalAmount} exceeds your current balance of $${currentBalance}.`,
+      message: `Your withdrawal request of ${formatMoney(
+        withdrawalAmount
+      )} exceeds your current balance of ${formatMoney(currentBalance)}.`,
     });
   }
   console.log(currentBalance, withdrawalAmount);
@@ -60,7 +67,9 @@ function checkIfOverMaximumWithdrawalAmount(req, res, next) {
   if (withdrawalAmount > 200) {
     return next({
       status: 400,
-      message: `Your withdrawal request of $${withdrawalAmount} exceeds the maximum amount of $200.`,
+      message: `Your withdrawal request of ${formatMoney(
+        withdrawalAmount
+      )} exceeds the maximum amount of $200.`,
     });
   }
   next();

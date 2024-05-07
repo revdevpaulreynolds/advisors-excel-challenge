@@ -6,6 +6,13 @@ const checkBillsDenominationUtil = (transactionAmount) => {
   return transactionAmount % billDenomination === 0;
 };
 
+const formatMoney = (amountToFormat) => {
+  return amountToFormat.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+  });
+};
+
 async function getOneBalance(req, res, next) {
   const { accountNumber } = req.params;
   if (accountNumber === "all") {
@@ -40,4 +47,5 @@ async function getOneBalance(req, res, next) {
 module.exports = {
   checkBillsDenominationUtil,
   getOneBalance,
+  formatMoney,
 };

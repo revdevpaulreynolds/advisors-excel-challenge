@@ -37,12 +37,11 @@ function Home({
   const [formInput, setFormInput] = useState<FormInput>(initialState);
   const [response, setResponse] = useState<Response>({});
   const [error, setError] = useState<Error>({});
-  const [accountNumber, setAccountNumber] = useState<number | undefined>(
-    undefined
-  );
+  const [accountNumber, setAccountNumber] = useState<string>("");
   const [displayBalance, setDisplayBalance] = useState<string | null>(null);
 
   const formatBalance = (balance: number): string => {
+    console.log(`balance in formatBalance: ${balance}`);
     return balance.toLocaleString("en-US", {
       style: "currency",
       currency: "USD",
@@ -62,8 +61,11 @@ function Home({
     };
 
     const responseSetter = (apiResponse: Response) => {
+      console.log(
+        `api response in responseSetter: ${JSON.stringify(apiResponse)}`
+      );
       setResponse(apiResponse),
-        setAccountNumber(apiResponse.account_number || undefined);
+        setAccountNumber(apiResponse.account_number?.toString() || "");
       apiResponse.balance &&
         setDisplayBalance(formatBalance(apiResponse.balance) || null);
     };
@@ -78,7 +80,6 @@ function Home({
             );
           })
           .catch((err) => {
-            console.log(`error in handlesubmit: ${err}`);
             setError(err);
           });
         break;
@@ -92,7 +93,7 @@ function Home({
             console.log(
               `Response in component's API call: ${JSON.stringify(res)}`
             );
-            setResponse(res);
+            responseSetter(res);
           })
           .catch(setError);
         break;
@@ -106,7 +107,7 @@ function Home({
             console.log(
               `Response in component's API call: ${JSON.stringify(res)}`
             );
-            setResponse(res);
+            responseSetter(res);
           })
           .catch(setError);
     }
@@ -132,20 +133,28 @@ function Home({
       <Grid
         container
         direction="column"
+        margin={2}
         spacing={2}
+        xs={12}
       >
         <Grid
           item
           justifyContent={"center"}
         >
           <h1>Welcome to Advisors Excel ATM!</h1>
-          <Grid item>
-            {accountNumber && <h2>Account Number: {accountNumber}</h2>}
-          </Grid>
+        </Grid>
+        <Grid item>
+          <h2>
+            {accountNumber
+              ? `Account Number: 
+         ${accountNumber}`
+              : ""}
+          </h2>
         </Grid>
         <Grid
           item
-          justifyContent={"center"}
+          className="bg-white"
+          padding={2}
         >
           <Form
             formInput={formInput}
@@ -154,6 +163,7 @@ function Home({
           />
         </Grid>
         <Grid item>
+          <p>Response goes here:</p>
           <p>
             {response.transaction_type
               ? displayMessage[response.transaction_type]
@@ -161,6 +171,7 @@ function Home({
           </p>
           <div>
             {response.allBalances &&
+              formInput.request_type == "" &&
               response.allBalances?.map((account, i) => (
                 <p key={i}>
                   Your account number {account.account_number} has a new balance
@@ -168,7 +179,7 @@ function Home({
                 </p>
               ))}
           </div>
-          <p>{error?.message || null}</p>
+          <p className="text-red-600 bg-white">{error?.message || null}</p>
         </Grid>
       </Grid>
     </>
