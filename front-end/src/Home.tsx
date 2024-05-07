@@ -128,19 +128,19 @@ function Home({
   };
 
   return (
-    <>
+    <Grid
+      container
+      id="top level Grid"
+      spacing={2}
+    >
       <Grid
         container
         direction="column"
-        margin={2}
         spacing={2}
         xs={12}
       >
-        <Grid
-          item
-          justifyContent={"center"}
-        >
-          <h1>Welcome to Advisors Excel ATM!</h1>
+        <Grid item>
+          <h1>Welcome to the Advisors Excel ATM</h1>
         </Grid>
         <Grid item>
           <h2>
@@ -150,11 +150,7 @@ function Home({
               : ""}
           </h2>
         </Grid>
-        <Grid
-          item
-          className="bg-white"
-          padding={2}
-        >
+        <Grid item>
           <Form
             formInput={formInput}
             handleSubmit={handleSubmit}
@@ -181,7 +177,7 @@ function Home({
           <p className="text-red-600 bg-white">{error?.message || null}</p>
         </Grid>
       </Grid>
-    </>
+    </Grid>
   );
 }
 
