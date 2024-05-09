@@ -60,9 +60,6 @@ function Home({
     };
 
     const responseSetter = (apiResponse: Response) => {
-      console.log(
-        `api response in responseSetter: ${JSON.stringify(apiResponse)}`
-      );
       setResponse(apiResponse),
         setAccountNumber(apiResponse.account_number?.toString() || "");
       apiResponse.balance &&
@@ -74,9 +71,6 @@ function Home({
         await getBalance(request.account_number, ac.signal)
           .then((res) => {
             responseSetter(res);
-            console.log(
-              `Response in component's API call: ${JSON.stringify(res)}`
-            );
           })
           .catch((err) => {
             setError(err);
@@ -89,9 +83,6 @@ function Home({
           ac.signal
         )
           .then((res) => {
-            console.log(
-              `Response in component's API call: ${JSON.stringify(res)}`
-            );
             responseSetter(res);
           })
           .catch(setError);
@@ -103,9 +94,6 @@ function Home({
           ac.signal
         )
           .then((res) => {
-            console.log(
-              `Response in component's API call: ${JSON.stringify(res)}`
-            );
             responseSetter(res);
           })
           .catch(setError);
@@ -171,12 +159,8 @@ function Home({
             <Grid
               container
               direction="column"
-              columnSpacing={2}
             >
-              <Grid
-                item
-                // padding={2}
-              >
+              <Grid item>
                 <Paper elevation={4}>
                   <p>Response goes here:</p>
                   <p>
@@ -196,10 +180,7 @@ function Home({
                   </div>
                 </Paper>
               </Grid>
-              <Grid
-                item
-                // padding={2}
-              >
+              <Grid item>
                 <Paper elevation={4}>
                   <p>Error goes here: </p>
                   <span id="error">{error?.message || null}</span>
