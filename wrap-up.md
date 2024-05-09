@@ -14,7 +14,7 @@
 
 - Not really, obviously I've been working on this a long time so all of the most basic stuff functions as desired. I wish I had more proficiency in MUI so it looked more polished.
 
-- A massive amount of my effort on this was spent learning all the complexity of setting up a project up from scratch, which I hadn't done before. Trying different libraries for migrations (including setting up all of their configurations, which often involved additional libraries), different UI styling options, realizing I could do things more simply by modifying the database initialization file only after struggling through JS migrations libraries, etc.
+- A massive amount of my effort on this was spent learning all the complexity of setting up a project up from scratch, which I hadn't done before, not to mention trying to understand how to work with Docker which I was seriously overcomplicating. Trying different libraries for migrations (including setting up all of their configurations, which often involved additional libraries), different UI styling options, realizing I could do things more simply by modifying the database initialization file only after struggling through JS migrations libraries, etc.
 
 ### If you were to continue building this out, what would you like to add next?
 
