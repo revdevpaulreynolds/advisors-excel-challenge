@@ -20,7 +20,9 @@
 
 - I'd add a separate interface for credit accounts, make the page have a nice looking UI element in place to show the current account number, probably add the ability to log in to your account, maybe some fun graphics of money going in or coming out of a slot, etc.
 - As an attendum to the above, I had a UX/UI developer look at this assignment and he thought it would be fun to make a mock ATM touchscreen, so I'd try to do something like that.
-- As mentioned above, I'd combine these projects into a single one as far as dependencies and scripts go
+- As mentioned above, I'd combine these projects into a single one as far as dependencies and scripts go, and I'd also probably break things further down into separate components for readability.
+- Now that you got me thinking about Docker, I'd also try to put it in a container
+- I started doing the backend in JS just to move quickly, but I'd add types to it because I missed the real time compilation quality-of-life improvements that TS gives us!
 
 ### If you have any other comments or info you'd like the reviewers to know, please add them below.
 
