@@ -35,10 +35,7 @@ function Form({ formInput, handleChange, handleSubmit }) {
       component="form"
       onSubmit={handleSubmit}
     >
-      <Grid
-        item
-        padding={2}
-      >
+      <Grid item>
         <Paper elevation={4}>
           <FormControl fullWidth>
             <Grid

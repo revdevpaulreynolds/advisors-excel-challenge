@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { getBalance, makeDeposit, makeWithdrawal } from "./utils/api";
 import Form from "./Form";
-import { Grid } from "@mui/material";
+import { Grid, Paper, Card, Typography } from "@mui/material";
 
 type Request = {
   account_number: string;
@@ -130,53 +130,85 @@ function Home({
   return (
     <Grid
       container
-      id="top level Grid"
-      spacing={2}
+      direction="column"
     >
-      <Grid
-        container
-        direction="column"
-        spacing={2}
-        xs={12}
-      >
-        <Grid item>
-          <h1>Welcome to the Advisors Excel ATM</h1>
+      <Card elevation={10}>
+        <Grid
+          item
+          margin={2}
+        >
+          <Typography variant="h2">
+            Welcome to the Advisors Excel ATM
+          </Typography>
         </Grid>
         <Grid item>
           <h2>
             {accountNumber
-              ? `Account Number: 
+              ? `Your Account Number: 
          ${accountNumber}`
               : ""}
           </h2>
         </Grid>
-        <Grid item>
-          <Form
-            formInput={formInput}
-            handleSubmit={handleSubmit}
-            handleChange={handleChange}
-          />
+        <Grid
+          container
+          direction="column"
+          // spacing={2}
+        >
+          <Grid
+            item
+            padding={4}
+          >
+            <Form
+              formInput={formInput}
+              handleSubmit={handleSubmit}
+              handleChange={handleChange}
+            />
+          </Grid>
+          <Grid
+            item
+            padding={4}
+          >
+            <Grid
+              container
+              direction="column"
+              columnSpacing={2}
+            >
+              <Grid
+                item
+                // padding={2}
+              >
+                <Paper elevation={4}>
+                  <p>Response goes here:</p>
+                  <p>
+                    {response.transaction_type
+                      ? displayMessage[response.transaction_type]
+                      : null}
+                  </p>
+                  <div>
+                    {response.allBalances &&
+                      formInput.request_type == "" &&
+                      response.allBalances?.map((account, i) => (
+                        <p key={i}>
+                          Your account number {account.account_number} has a new
+                          balance of {formatBalance(account.balance)}
+                        </p>
+                      ))}
+                  </div>
+                </Paper>
+              </Grid>
+              <Grid
+                item
+                // padding={2}
+              >
+                <Paper elevation={4}>
+                  <p>Error goes here: </p>
+                  <span id="error">{error?.message || null}</span>
+                </Paper>
+              </Grid>
+            </Grid>
+          </Grid>
         </Grid>
-        <Grid item>
-          <p>Response goes here:</p>
-          <p>
-            {response.transaction_type
-              ? displayMessage[response.transaction_type]
-              : null}
-          </p>
-          <div>
-            {response.allBalances &&
-              formInput.request_type == "" &&
-              response.allBalances?.map((account, i) => (
-                <p key={i}>
-                  Your account number {account.account_number} has a new balance
-                  of {formatBalance(account.balance)}
-                </p>
-              ))}
-          </div>
-          <p className="text-red-600 bg-white">{error?.message || null}</p>
-        </Grid>
-      </Grid>
+      </Card>
     </Grid>
   );
 }

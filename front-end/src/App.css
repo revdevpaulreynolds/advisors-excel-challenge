@@ -3,6 +3,11 @@
   text-align: center;
 }
 
+#error {
+  background-color: white;
+  color: red;
+}
+
 /* 
 .logo {
   height: 6em;
